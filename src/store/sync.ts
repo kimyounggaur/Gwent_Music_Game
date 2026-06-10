@@ -1,0 +1,20 @@
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+let client: SupabaseClient | null = null;
+
+export function getSupabaseClient(): SupabaseClient | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  if (!client) client = createClient(url, key);
+  return client;
+}
+
+export async function syncLocalSnapshot(snapshot: Record<string, unknown>): Promise<{ enabled: boolean; error?: string }> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return { enabled: false };
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) return { enabled: true, error: "Not signed in" };
+  const { error } = await supabase.from("profiles").upsert({ id: user.user.id, client_snapshot: snapshot, updated_at: new Date().toISOString() });
+  return { enabled: true, error: error?.message };
+}
