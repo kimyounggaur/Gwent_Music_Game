@@ -1,7 +1,7 @@
 import type { Faction } from "@/engine/types";
 
 function asset(path: string): string {
-  return `/assets/${path.split("/").map(encodeURIComponent).join("/")}`;
+  return `/game-assets/${path.split("/").map(encodeURIComponent).join("/")}`;
 }
 
 export const BOARD_ASSET = asset("Boards/Main Board LowerRes.png");
