@@ -12,3 +12,4 @@ yarn-error.log*
 pnpm-debug.log*
 *.log
 .vercel
+game-master-rulebook.zip
